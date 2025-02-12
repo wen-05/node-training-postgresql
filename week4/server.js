@@ -26,24 +26,22 @@ const requestListener = async (req, res) => {
     body += chunk
   })
 
+  const sendResponse = (res, statusCode, data) => {
+    res.writeHead(statusCode, headers)
+    res.write(JSON.stringify(data))
+    res.end()
+  }
+
   if (req.url === "/api/credit-package" && req.method === "GET") {
     try {
       const packages = await AppDataSource.getRepository("CreditPackage").find({
         select: ["id", "name", "credit_amount", "price"]
       })
-      res.writeHead(200, headers)
-      res.write(JSON.stringify({
-        status: "success",
-        data: packages
-      }))
-      res.end()
+      sendResponse(res, 200, { status: "success", data: packages })
+
     } catch (error) {
-      res.writeHead(500, headers)
-      res.write(JSON.stringify({
-        status: "error",
-        message: "伺服器錯誤"
-      }))
-      res.end()
+      sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
     }
   } else if (req.url === "/api/credit-package" && req.method === "POST") {
     req.on("end", async () => {
@@ -52,12 +50,8 @@ const requestListener = async (req, res) => {
         if (isUndefined(data.name) || isNotValidSting(data.name) ||
           isUndefined(data.credit_amount) || isNotValidInteger(data.credit_amount) ||
           isUndefined(data.price) || isNotValidInteger(data.price)) {
-          res.writeHead(400, headers)
-          res.write(JSON.stringify({
-            status: "failed",
-            message: "欄位未填寫正確"
-          }))
-          res.end()
+          sendResponse(res, 400, { status: "failed", message: "欄位未填寫正確" })
+
           return
         }
         const creditPackageRepo = await AppDataSource.getRepository("CreditPackage")
@@ -67,12 +61,8 @@ const requestListener = async (req, res) => {
           }
         })
         if (existPackage.length > 0) {
-          res.writeHead(409, headers)
-          res.write(JSON.stringify({
-            status: "failed",
-            message: "資料重複"
-          }))
-          res.end()
+          sendResponse(res, 409, { status: "failed", message: "資料重複" })
+
           return
         }
         const newPackage = await creditPackageRepo.create({
@@ -81,86 +71,51 @@ const requestListener = async (req, res) => {
           price: data.price
         })
         const result = await creditPackageRepo.save(newPackage)
-        res.writeHead(200, headers)
-        res.write(JSON.stringify({
-          status: "success",
-          data: result
-        }))
-        res.end()
+        sendResponse(res, 200, { status: "success", data: result })
+
       } catch (error) {
-        res.writeHead(500, headers)
-        res.write(JSON.stringify({
-          status: "error",
-          message: "伺服器錯誤"
-        }))
-        res.end()
+        sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
       }
     })
   } else if (req.url.startsWith("/api/credit-package/") && req.method === "DELETE") {
     try {
       const packageId = req.url.split("/").pop()
       if (isUndefined(packageId) || isNotValidSting(packageId)) {
-        res.writeHead(400, headers)
-        res.write(JSON.stringify({
-          status: "failed",
-          message: "ID錯誤"
-        }))
-        res.end()
+        sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
+
         return
       }
       const result = await AppDataSource.getRepository("CreditPackage").delete(packageId)
       if (result.affected === 0) {
-        res.writeHead(400, headers)
-        res.write(JSON.stringify({
-          status: "failed",
-          message: "ID錯誤"
-        }))
-        res.end()
+        sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
+
         return
       }
-      res.writeHead(200, headers)
-      res.write(JSON.stringify({
-        status: "success"
-      }))
-      res.end()
+      sendResponse(res, 200, { status: "success" })
+
     } catch (error) {
-      res.writeHead(500, headers)
-      res.write(JSON.stringify({
-        status: "error",
-        message: "伺服器錯誤"
-      }))
-      res.end()
+      sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
     }
   } else if (req.url === "/api/coaches/skill" && req.method === "GET") {
     try {
       const skills = await AppDataSource.getRepository("Skill").find({
         select: ["id", "name"]
       })
-      res.writeHead(200, headers)
-      res.write(JSON.stringify({
-        status: "success",
-        data: skills
-      }))
-      res.end()
+      sendResponse(res, 200, { status: "success", data: skills })
+
     } catch (error) {
-      res.writeHead(500, headers)
-      res.write(JSON.stringify({
-        status: "error",
-        message: "伺服器錯誤"
-      }))
-      res.end()
+      sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
     }
   } else if (req.url === "/api/coaches/skill" && req.method === "POST") {
     req.on("end", async () => {
       try {
         const data = JSON.parse(body)
         if (isUndefined(data.name) || isNotValidSting(data.name)) {
-          res.writeHead(400, headers)
-          res.write(JSON.stringify({
-            status: "failed",
-            message: "欄位未填寫正確"
-          }))
-          res.end()
+          sendResponse(res, 400, { status: "failed", message: "欄位未填寫正確" })
+
           return
         }
         const skillRepo = await AppDataSource.getRepository("Skill")
@@ -170,78 +125,47 @@ const requestListener = async (req, res) => {
           }
         })
         if (existSkill.length > 0) {
-          res.writeHead(409, headers)
-          res.write(JSON.stringify({
-            status: "failed",
-            message: "資料重複"
-          }))
-          res.end()
+          sendResponse(res, 409, { status: "failed", message: "資料重複" })
+
           return
         }
         const newSkill = await skillRepo.create({
           name: data.name,
         })
         const result = await skillRepo.save(newSkill)
-        res.writeHead(200, headers)
-        res.write(JSON.stringify({
-          status: "success",
-          data: result
-        }))
-        res.end()
+        sendResponse(res, 200, { status: "success", data: result })
+
       } catch (error) {
-        res.writeHead(500, headers)
-        res.write(JSON.stringify({
-          status: "error",
-          message: "伺服器錯誤"
-        }))
-        res.end()
+        sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
       }
     })
   } else if (req.url.startsWith("/api/coaches/skill/") && req.method === "DELETE") {
     try {
       const skillId = req.url.split("/").pop()
       if (isUndefined(skillId) || isNotValidSting(skillId)) {
-        res.writeHead(400, headers)
-        res.write(JSON.stringify({
-          status: "failed",
-          message: "ID錯誤"
-        }))
-        res.end()
+        sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
+
         return
       }
       const result = await AppDataSource.getRepository("Skill").delete(skillId)
       if (result.affected === 0) {
-        res.writeHead(400, headers)
-        res.write(JSON.stringify({
-          status: "failed",
-          message: "ID錯誤"
-        }))
-        res.end()
+        sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
+
         return
       }
-      res.writeHead(200, headers)
-      res.write(JSON.stringify({
-        status: "success"
-      }))
-      res.end()
+      sendResponse(res, 200, { status: "success" })
+
     } catch (error) {
-      res.writeHead(500, headers)
-      res.write(JSON.stringify({
-        status: "error",
-        message: "伺服器錯誤"
-      }))
-      res.end()
+      sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
+
     }
   } else if (req.method === "OPTIONS") {
-    res.writeHead(200, headers)
-    res.end()
+    sendResponse(res, 200, {})
+
   } else {
-    res.writeHead(404, headers)
-    res.write(JSON.stringify({
-      status: "failed",
-      message: "無此網站路由"
-    }))
-    res.end()
+    sendResponse(res, 404, { status: "failed", message: "無此網站路由" })
+
   }
 }
 
