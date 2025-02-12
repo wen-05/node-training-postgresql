@@ -88,7 +88,6 @@ const requestListener = async (req, res) => {
         }))
         res.end()
       } catch (error) {
-        console.error(error)
         res.writeHead(500, headers)
         res.write(JSON.stringify({
           status: "error",
@@ -125,7 +124,6 @@ const requestListener = async (req, res) => {
       }))
       res.end()
     } catch (error) {
-      console.error(error)
       res.writeHead(500, headers)
       res.write(JSON.stringify({
         status: "error",
@@ -191,7 +189,6 @@ const requestListener = async (req, res) => {
         }))
         res.end()
       } catch (error) {
-        console.error(error)
         res.writeHead(500, headers)
         res.write(JSON.stringify({
           status: "error",
@@ -228,7 +225,6 @@ const requestListener = async (req, res) => {
       }))
       res.end()
     } catch (error) {
-      console.error(error)
       res.writeHead(500, headers)
       res.write(JSON.stringify({
         status: "error",
