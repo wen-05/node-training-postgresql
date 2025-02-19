@@ -71,7 +71,7 @@ const requestListener = async (req, res) => {
           price: data.price
         })
         const result = await creditPackageRepo.save(newPackage)
-        sendResponse(res, 200, { status: "success", data: result })
+        sendResponse(res, 201, { status: "success", data: result })
 
       } catch (error) {
         sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
@@ -92,7 +92,7 @@ const requestListener = async (req, res) => {
 
         return
       }
-      sendResponse(res, 200, { status: "success" })
+      sendResponse(res, 204, { status: "success" })
 
     } catch (error) {
       sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
@@ -133,7 +133,7 @@ const requestListener = async (req, res) => {
           name: data.name,
         })
         const result = await skillRepo.save(newSkill)
-        sendResponse(res, 200, { status: "success", data: result })
+        sendResponse(res, 201, { status: "success", data: result })
 
       } catch (error) {
         sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
@@ -154,7 +154,7 @@ const requestListener = async (req, res) => {
 
         return
       }
-      sendResponse(res, 200, { status: "success" })
+      sendResponse(res, 204, { status: "success" })
 
     } catch (error) {
       sendResponse(res, 500, { status: "error", message: "伺服器錯誤" })
