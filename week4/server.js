@@ -6,7 +6,7 @@ function isUndefined(value) {
   return value === undefined
 }
 
-function isNotValidSting(value) {
+function isNotValidString(value) {
   return typeof value !== "string" || value.trim().length === 0 || value === ""
 }
 
@@ -47,7 +47,7 @@ const requestListener = async (req, res) => {
     req.on("end", async () => {
       try {
         const data = JSON.parse(body)
-        if (isUndefined(data.name) || isNotValidSting(data.name) ||
+        if (isUndefined(data.name) || isNotValidString(data.name) ||
           isUndefined(data.credit_amount) || isNotValidInteger(data.credit_amount) ||
           isUndefined(data.price) || isNotValidInteger(data.price)) {
           sendResponse(res, 400, { status: "failed", message: "欄位未填寫正確" })
@@ -81,7 +81,7 @@ const requestListener = async (req, res) => {
   } else if (req.url.startsWith("/api/credit-package/") && req.method === "DELETE") {
     try {
       const packageId = req.url.split("/").pop()
-      if (isUndefined(packageId) || isNotValidSting(packageId)) {
+      if (isUndefined(packageId) || isNotValidString(packageId)) {
         sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
 
         return
@@ -113,7 +113,7 @@ const requestListener = async (req, res) => {
     req.on("end", async () => {
       try {
         const data = JSON.parse(body)
-        if (isUndefined(data.name) || isNotValidSting(data.name)) {
+        if (isUndefined(data.name) || isNotValidString(data.name)) {
           sendResponse(res, 400, { status: "failed", message: "欄位未填寫正確" })
 
           return
@@ -143,7 +143,7 @@ const requestListener = async (req, res) => {
   } else if (req.url.startsWith("/api/coaches/skill/") && req.method === "DELETE") {
     try {
       const skillId = req.url.split("/").pop()
-      if (isUndefined(skillId) || isNotValidSting(skillId)) {
+      if (isUndefined(skillId) || isNotValidString(skillId)) {
         sendResponse(res, 400, { status: "failed", message: "ID錯誤" })
 
         return
