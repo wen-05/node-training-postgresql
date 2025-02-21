@@ -1,17 +1,10 @@
 const express = require('express')
-
 const router = express.Router()
-const { dataSource } = require('../db/data-source')
-const logger = require('../utils/logger')('CreditPackage')
 
-router.get('/', async (req, res, next) => {
+const creditPackageController = require('../controllers/creditPackageController')
 
-})
-
-router.post('/', async (req, res, next) => {
-})
-
-router.delete('/:creditPackageId', async (req, res, next) => {
-})
+router.get('/', creditPackageController.getCreditPackage)
+router.post('/', creditPackageController.createCreditPackage)
+router.delete('/:creditPackageId', creditPackageController.deleteCreditPackage)
 
 module.exports = router
