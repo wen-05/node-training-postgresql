@@ -26,9 +26,7 @@ const createSkill = async (req, res, next) => {
     }
 
     const skillRepo = dataSource.getRepository('Skill')
-    const existSkill = await skillRepo.find({
-      where: { name }
-    })
+    const existSkill = await skillRepo.findBy({ name })
 
     if (existSkill.length > 0) {
       handleFailed(res, 409, '資料重複')

@@ -30,9 +30,7 @@ const createCreditPackage = async (req, res, next) => {
     }
 
     const creditPurchaseRepo = dataSource.getRepository('CreditPackage')
-    const existCreditPurchase = await creditPurchaseRepo.find({
-      where: { name }
-    })
+    const existCreditPurchase = await creditPurchaseRepo.findBy({ name })
 
     if (existCreditPurchase.length > 0) {
       handleFailed(res, 409, '資料重複')

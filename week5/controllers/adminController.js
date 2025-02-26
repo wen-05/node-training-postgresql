@@ -1,6 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const logger = require('../utils/logger')('Admin')
-const { isUndefined, isNotValidString, isNotValidInteger } = require('../utils/valid')
+const { isUndefined, isNotValidString, isNotValidInteger, isNotValidUUID } = require('../utils/valid')
 const { handleSuccess, handleFailed } = require('../utils/sendResponse')
 
 const createCourse = async (req, res, next) => {
@@ -16,8 +16,8 @@ const createCourse = async (req, res, next) => {
       meeting_url: meetingUrl
     } = req.body
 
-    if (isUndefined(userId) || isNotValidString(userId) ||
-      isUndefined(skillId) || isNotValidString(skillId) ||
+    if (isUndefined(userId) || isNotValidString(userId) || isNotValidUUID(userId) ||
+      isUndefined(skillId) || isNotValidString(skillId) || isNotValidUUID(skillId) ||
       isUndefined(name) || isNotValidString(name) ||
       isUndefined(description) || isNotValidString(description) ||
       isUndefined(startAt) || isNotValidString(startAt) ||
@@ -59,11 +59,9 @@ const createCourse = async (req, res, next) => {
     })
 
     const savedCourse = await courseRepo.save(newCourse)
-    const course = await courseRepo.findOne({
-      where: { id: savedCourse.id }
-    })
+    const course = await courseRepo.findOneBy({ id: savedCourse.id })
 
-    handleSuccess(res, 201, course)
+    handleSuccess(res, 201, { course })
 
   } catch (error) {
     logger.error(error)
@@ -84,8 +82,8 @@ const editCourse = async (req, res, next) => {
       meeting_url: meetingUrl
     } = req.body
 
-    if (isNotValidString(courseId) ||
-      isUndefined(skillId) || isNotValidString(skillId) ||
+    if (isNotValidString(courseId) || isNotValidUUID(courseId) ||
+      isUndefined(skillId) || isNotValidString(skillId) || isNotValidUUID(skillId) ||
       isUndefined(name) || isNotValidString(name) ||
       isUndefined(description) || isNotValidString(description) ||
       isUndefined(startAt) || isNotValidString(startAt) ||
@@ -99,9 +97,7 @@ const editCourse = async (req, res, next) => {
     }
 
     const courseRepo = dataSource.getRepository('Course')
-    const existingCourse = await courseRepo.findOne({
-      where: { id: courseId }
-    })
+    const existingCourse = await courseRepo.findOneBy({ id: courseId })
 
     if (!existingCourse) {
       logger.warn('課程不存在')
@@ -127,9 +123,7 @@ const editCourse = async (req, res, next) => {
       return
     }
 
-    const savedCourse = await courseRepo.findOne({
-      where: { id: courseId }
-    })
+    const savedCourse = await courseRepo.findOneBy({ id: courseId })
 
     handleSuccess(res, 200, { course: savedCourse })
 
@@ -148,7 +142,7 @@ const changeRole = async (req, res, next) => {
       profile_image_url: profileImageUrl = null
     } = req.body
 
-    if (isUndefined(experienceYears) || isNotValidInteger(experienceYears) || isUndefined(description) || isNotValidString(description)) {
+    if (isNotValidUUID(userId) || isUndefined(experienceYears) || isNotValidInteger(experienceYears) || isUndefined(description) || isNotValidString(description)) {
 
       logger.warn('欄位未填寫正確')
       handleFailed(res, 400, '欄位未填寫正確')
@@ -174,7 +168,7 @@ const changeRole = async (req, res, next) => {
       return
     } else if (existingUser.role === 'COACH') {
       logger.warn('使用者已經是教練')
-      handleFailed(res, 400, '使用者已經是教練')
+      handleFailed(res, 409, '使用者已經是教練')
       return
     }
 

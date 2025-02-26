@@ -26,9 +26,7 @@ const signup = async (req, res, next) => {
     const userRepository = dataSource.getRepository('User')
 
     // 檢查 email 是否已存在
-    const existingUser = await userRepository.findOne({
-      where: { email }
-    })
+    const existingUser = await userRepository.findOneBy({ email })
 
     if (existingUser) {
       logger.warn('建立使用者錯誤: Email 已被使用')

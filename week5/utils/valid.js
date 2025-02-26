@@ -15,9 +15,15 @@ const isValidPassword = (value) => {
   return passwordPattern.test(value);
 }
 
+const isNotValidUUID = (id) => {
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidPattern.test(id);
+}
+
 module.exports = {
   isUndefined,
   isNotValidString,
   isNotValidInteger,
-  isValidPassword
+  isValidPassword,
+  isNotValidUUID
 }

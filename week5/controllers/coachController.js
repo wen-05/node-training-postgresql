@@ -1,6 +1,6 @@
 const { dataSource } = require('../db/data-source')
 const logger = require('../utils/logger')('Coach')
-const { isUndefined, isNotValidString, isNotValidInteger } = require('../utils/valid')
+const { isUndefined, isNotValidString, isNotValidInteger, isNotValidUUID } = require('../utils/valid')
 const { handleSuccess, handleFailed } = require('../utils/sendResponse')
 
 const getList = async (req, res, next) => {
@@ -39,11 +39,11 @@ const getList = async (req, res, next) => {
   }
 }
 
-const detail = async (req, res, next) => {
+const getDetail = async (req, res, next) => {
   try {
     const { coachId } = req.params
 
-    if (isUndefined(coachId) || isNotValidString(coachId)) {
+    if (isUndefined(coachId) || isNotValidString(coachId) || isNotValidUUID(coachId)) {
 
       logger.warn('欄位未填寫正確')
       handleFailed(res, 400, '欄位未填寫正確')
@@ -85,4 +85,4 @@ const detail = async (req, res, next) => {
   }
 }
 
-module.exports = { getList, detail }
+module.exports = { getList, getDetail }
