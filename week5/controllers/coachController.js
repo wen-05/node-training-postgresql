@@ -43,7 +43,7 @@ const getDetail = async (req, res, next) => {
   try {
     const { coachId } = req.params
 
-    if (isUndefined(coachId) || isNotValidString(coachId) || isNotValidUUID(coachId)) {
+    if (isUndefined(coachId) || isNotValidString(coachId) || !isNotValidUUID(coachId)) {
 
       logger.warn('欄位未填寫正確')
       handleFailed(res, 400, '欄位未填寫正確')

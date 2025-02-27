@@ -16,8 +16,8 @@ const createCourse = async (req, res, next) => {
       meeting_url: meetingUrl
     } = req.body
 
-    if (isUndefined(userId) || isNotValidString(userId) || isNotValidUUID(userId) ||
-      isUndefined(skillId) || isNotValidString(skillId) || isNotValidUUID(skillId) ||
+    if (isUndefined(userId) || isNotValidString(userId) || !isNotValidUUID(userId) ||
+      isUndefined(skillId) || isNotValidString(skillId) || !isNotValidUUID(skillId) ||
       isUndefined(name) || isNotValidString(name) ||
       isUndefined(description) || isNotValidString(description) ||
       isUndefined(startAt) || isNotValidString(startAt) ||
@@ -82,8 +82,8 @@ const editCourse = async (req, res, next) => {
       meeting_url: meetingUrl
     } = req.body
 
-    if (isNotValidString(courseId) || isNotValidUUID(courseId) ||
-      isUndefined(skillId) || isNotValidString(skillId) || isNotValidUUID(skillId) ||
+    if (isNotValidString(courseId) || !isNotValidUUID(courseId) ||
+      isUndefined(skillId) || isNotValidString(skillId) || !isNotValidUUID(skillId) ||
       isUndefined(name) || isNotValidString(name) ||
       isUndefined(description) || isNotValidString(description) ||
       isUndefined(startAt) || isNotValidString(startAt) ||
@@ -142,7 +142,7 @@ const changeRole = async (req, res, next) => {
       profile_image_url: profileImageUrl = null
     } = req.body
 
-    if (isNotValidUUID(userId) || isUndefined(experienceYears) || isNotValidInteger(experienceYears) || isUndefined(description) || isNotValidString(description)) {
+    if (!isNotValidUUID(userId) || isUndefined(experienceYears) || isNotValidInteger(experienceYears) || isUndefined(description) || isNotValidString(description)) {
 
       logger.warn('欄位未填寫正確')
       handleFailed(res, 400, '欄位未填寫正確')
